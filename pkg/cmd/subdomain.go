@@ -23,18 +23,18 @@ var subdomainCmd = &cobra.Command{
 		target := args[0]
 
 		// 创建子域名扫描实例
-		ds := subdomain.NewDomainScanner(target)
-		ds.SetWordlist(subdomainWordlist)
-		ds.SetTimeout(time.Duration(subdomainTimeout) * time.Second)
-		ds.SetConcurrent(subdomainConcurrent)
+		ss := subdomain.NewSubdomainScanner(target)
+		ss.SetWordlist([]string{subdomainWordlist})
+		ss.SetTimeout(time.Duration(subdomainTimeout) * time.Second)
+		ss.SetConcurrent(subdomainConcurrent)
 
 		// 执行子域名扫描
-		results := ds.Scan()
+		results := ss.Scan()
 
 		// 输出扫描结果
 		fmt.Printf("\n目标域名: %s\n", target)
 		for _, result := range results {
-			fmt.Printf("子域名: %s (IP: %s)\n", result.Subdomain, result.IP)
+			fmt.Printf("子域名: %s (IP: %v)\n", result.Subdomain, result.IPList)
 		}
 		fmt.Printf("\n总计发现 %d 个子域名\n", len(results))
 	},

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/projectdiscovery/wappalyzergo"
+	wappalyzer "github.com/projectdiscovery/wappalyzergo"
 	"github.com/seaung/nox/pkg/utils"
 )
 
@@ -58,13 +58,13 @@ func (fs *FingerScanner) Scan() (*FingerResult, error) {
 	}
 
 	// 创建wappalyzer实例
-	wappalyzer, err := wappalyzergo.New()
+	wappalyzerClient, err := wappalyzer.New()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create wappalyzer instance: %v", err)
 	}
 
 	// 识别技术
-	techs := wappalyzer.Fingerprint(resp.Header, body)
+	techs := wappalyzerClient.Fingerprint(resp.Header, body)
 	technologies := make([]string, 0)
 	for tech := range techs {
 		technologies = append(technologies, tech)

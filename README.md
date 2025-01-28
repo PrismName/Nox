@@ -9,6 +9,7 @@ Nox是一个功能强大的网络安全扫描工具箱，集成了端口扫描�
 - Web指纹识别：识别Web应用的技术栈、框架、CMS等信息
 - Web爬虫：自动爬取网站结构，发现潜在的敏感信息
 
+# Nox
 ## 安装
 
 ```bash
@@ -18,12 +19,36 @@ git clone https://github.com/seaung/Nox.git
 # 进入项目目录
 cd Nox
 
-# 编译安装
-go build -o nox cmd/nox.go
+# 使用Makefile构建
+# 执行完整构建流程（清理、格式化、测试和构建）
+make all
+
+# 仅构建项目
+make build
+
+# 运行测试
+make test
+
+# 格式化代码
+make fmt
+
+# 运行代码静态检查
+make vet
+
+# 清理构建文件
+make clean
+
+# 跨平台编译
+make build-linux    # 编译Linux版本
+make build-windows  # 编译Windows版本
+make build-darwin   # 编译MacOS版本
+make build-all      # 编译所有平台版本
+
+# 安装到GOPATH
+make install
 ```
 
 ## 使用方法
-
 ### 端口扫描
 
 ```bash
@@ -34,40 +59,12 @@ go build -o nox cmd/nox.go
 ./nox scan -t example.com -p 53,161 --udp
 ```
 
-### 子域名发现
-
-```bash
-# 使用内置字典扫描子域名
-./nox subdomain -d example.com
-
-# 指定自定义字典
-./nox subdomain -d example.com -w custom_wordlist.txt
-```
-
-### Web指纹识别
-
-```bash
-# 识别单个目标
-./nox finger -u https://example.com
-```
-
-### Web爬虫
-
-```bash
-# 爬取网站
-./nox crawler -u https://example.com
-```
-
-## 注意事项
-
-1. 请合法合规使用本工具，仅用于授权的安全测试
-2. 建议在使用前先了解相关法律法规
-3. 扫描速度过快可能会触发目标的安全防护机制
-
 ## 贡献
 
 欢迎提交Issue和Pull Request来帮助改进这个项目！
 
+```
+
 ## 许可证
 
-本项目采用MIT许可证，详见[LICENSE](LICENSE)文件。
+本项目采用Apache V2.0许可证，详见[LICENSE](LICENSE)文件。

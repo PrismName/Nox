@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/seaung/nox/pkg/port"
@@ -23,10 +25,31 @@ var scanCmd = &cobra.Command{
 		target := args[0]
 
 		// 创建端口扫描实例
-		ps := port.NewPortScanner(target)
-		ps.SetPorts(scanPorts)
-		ps.SetTimeout(time.Duration(scanTimeout) * time.Second)
-		ps.SetConcurrent(scanConcurrent)
+		ps := port.NewPortScanner(target, port.TCP_CONNECT)
+
+		// 解析端口范围
+		if strings.Contains(scanPorts, "-") {
+			parts := strings.Split(scanPorts, "-")
+			if len(parts) == 2 {
+				start, err1 := strconv.Atoi(parts[0])
+				end, err2 := strconv.Atoi(parts[1])
+				if err1 == nil && err2 == nil {
+					ps.SetPortRange(start, end)
+				}
+			}
+		} else {
+			ports := make([]int, 0)
+			for _, p := range strings.Split(scanPorts, ",") {
+				if port, err := strconv.Atoi(p); err == nil {
+					ports = append(ports, port)
+				}
+			}
+			ps.SetPorts(ports)
+		}
+
+		// 设置超时时间和并发数
+		ps.Timeout = time.Duration(scanTimeout) * time.Second
+		ps.Concurrent = scanConcurrent
 
 		// 执行端口扫描
 		results := ps.Scan()
@@ -34,7 +57,7 @@ var scanCmd = &cobra.Command{
 		// 输出扫描结果
 		fmt.Printf("\n目标主机: %s\n", target)
 		for _, result := range results {
-			fmt.Printf("端口 %d: %s\n", result.Port, result.Service)
+			fmt.Printf("端口 %d: %s (%s)\n", result.Port, result.Service, result.State)
 		}
 		fmt.Printf("\n总计发现 %d 个开放端口\n", len(results))
 	},

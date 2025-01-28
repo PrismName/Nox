@@ -10,6 +10,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/seaung/nox/pkg/utils"
+	"github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/js"
 )
 
@@ -61,7 +62,8 @@ func (c *Crawler) SetConcurrent(concurrent int) {
 // extractURLsFromJS 从JavaScript代码中提取URL
 func (c *Crawler) extractURLsFromJS(jsCode string) []string {
 	urls := make([]string, 0)
-	lexer := js.NewLexer(strings.NewReader(jsCode))
+	// 解析JavaScript代码
+	lexer := js.NewLexer(parse.NewInput(strings.NewReader(jsCode)))
 
 	for {
 		tt, text := lexer.Next()
